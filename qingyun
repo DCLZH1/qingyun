@@ -1,2 +1,392 @@
-local e = "https://raw.githubusercontent.com/CNqingyun/-/main/%E6%83%85%E4%BA%91.lua";
-loadstring(game:HttpGet(e))();
+local ZZc = "LOL!043O00030A3O006C6F6164737472696E6703043O0067616D6503073O00482O747047657403493O00682O7470733A2O2F7261772E67697468756275736572636F6E74656E742E636F6D2F434E71696E6779756E2F2D2F6D61696E2F2545362538332538352545342542412539312E6C756100083O0012043O00013O00122O000100023O00202O00010001000300122O000300046O000100039O0000026O000100016O00017O00";
+local o = "unpack";
+local a = "ldexp";
+local t = "sub";
+local e = "char";
+local StrToNumber = tonumber;
+local Byte = string.byte;
+local Char = string[e];
+local Sub = string[t];
+local Subg = string.gsub;
+local Rep = string.rep;
+local Concat = table.concat;
+local Insert = table.insert;
+local LDExp = math[a];
+local GetFEnv = getfenv or function()
+	return _ENV;
+end;
+local Setmetatable = setmetatable;
+local PCall = pcall;
+local Select = select;
+local Unpack = unpack or table[o];
+local ToNumber = tonumber;
+local function VMCall(ByteString, vmenv, ...)
+	local n = "..";
+	local i = 1;
+	local DIP = i;
+	local repeatNext;
+	ByteString = Subg(Sub(ByteString, 5), n, function(byte)
+		local s = 2;
+		if (Byte(byte, s) == 79) then
+			local h = "";
+			repeatNext = StrToNumber(Sub(byte, 1, 1));
+			return h;
+		else
+			local a = Char(StrToNumber(byte, 16));
+			if repeatNext then
+				local r = nil;
+				local b = Rep(a, repeatNext);
+				repeatNext = r;
+				return b;
+			else
+				return a;
+			end
+		end
+	end);
+	local function gBit(Bit, Start, End)
+		if End then
+			local m = 1;
+			local u = 1;
+			local c = 2;
+			local l = 1;
+			local d = 2;
+			local Res = (Bit / (d ^ (Start - l))) % (c ^ (((End - u) - (Start - 1)) + 1));
+			return Res - (Res % m);
+		else
+			local g = 1;
+			local f = 1;
+			local w = 2;
+			local Plc = w ^ (Start - f);
+			return (((Bit % (Plc + Plc)) >= Plc) and g) or 0;
+		end
+	end
+	local function gBits8()
+		local y = 1;
+		local a = Byte(ByteString, DIP, DIP);
+		DIP = DIP + y;
+		return a;
+	end
+	local function gBits16()
+		local a, b = Byte(ByteString, DIP, DIP + 2);
+		DIP = DIP + 2;
+		return (b * 256) + a;
+	end
+	local function gBits32()
+		local b = 256;
+		local p = 65536;
+		local a, b, c, d = Byte(ByteString, DIP, DIP + 3);
+		DIP = DIP + 4;
+		return (d * 16777216) + (c * p) + (b * b) + a;
+	end
+	local function gFloat()
+		local R = 52;
+		local A = 0;
+		local T = 1;
+		local E = 1;
+		local z = 1;
+		local q = 21;
+		local j = 32;
+		local x = 2;
+		local k = 20;
+		local v = 1;
+		local Left = gBits32();
+		local Right = gBits32();
+		local IsNormal = v;
+		local Mantissa = (gBit(Right, 1, k) * (x ^ j)) + Left;
+		local Exponent = gBit(Right, q, 31);
+		local Sign = ((gBit(Right, 32) == z) and -E) or T;
+		if (Exponent == A) then
+			if (Mantissa == 0) then
+				local O = 0;
+				return Sign * O;
+			else
+				local I = 1;
+				Exponent = I;
+				IsNormal = 0;
+			end
+		else
+			local N = 2047;
+			if (Exponent == N) then
+				local H = 1;
+				local S = 0;
+				return ((Mantissa == S) and (Sign * (H / 0))) or (Sign * NaN);
+			end
+		end
+		return LDExp(Sign, Exponent - 1023) * (IsNormal + (Mantissa / (2 ^ R)));
+	end
+	local function gString(Len)
+		local Str;
+		if not Len then
+			local D = 0;
+			Len = gBits32();
+			if (Len == D) then
+				local L = "";
+				return L;
+			end
+		end
+		Str = Sub(ByteString, DIP, (DIP + Len) - 1);
+		DIP = DIP + Len;
+		local FStr = {};
+		for Idx = 1, #Str do
+			FStr[Idx] = Char(Byte(Sub(Str, Idx, Idx)));
+		end
+		return Concat(FStr);
+	end
+	local gInt = gBits32;
+	local function _R(...)
+		local U = "#";
+		local C = 1;
+		return {...}, Select(U, ...);
+	end
+	local function Deserialize()
+		local Zk = 1;
+		local V = 1;
+		local B = 3;
+		local G = 4;
+		local F = nil;
+		local W = 3;
+		local M = 2;
+		local Instrs = {};
+		local Functions = {};
+		local Lines = {};
+		local Chunk = {Instrs,Functions,F,Lines};
+		local ConstCount = gBits32();
+		local Consts = {};
+		for Idx = 1, ConstCount do
+			local Y = 1;
+			local Type = gBits8();
+			local Cons;
+			if (Type == Y) then
+				Cons = gBits8() ~= 0;
+			elseif (Type == 2) then
+				Cons = gFloat();
+			else
+				local P = 3;
+				if (Type == P) then
+					Cons = gString();
+				end
+			end
+			Consts[Idx] = Cons;
+		end
+		Chunk[B] = gBits8();
+		for Idx = V, gBits32() do
+			local K = 1;
+			local Descriptor = gBits8();
+			if (gBit(Descriptor, 1, K) == 0) then
+				local Zb = 3;
+				local Zy = 2;
+				local Zg = 1;
+				local Zn = 0;
+				local Zi = nil;
+				local Zo = nil;
+				local Za = 3;
+				local Zt = 2;
+				local Ze = 1;
+				local Z = 6;
+				local Q = 4;
+				local J = 3;
+				local X = 2;
+				local Type = gBit(Descriptor, X, J);
+				local Mask = gBit(Descriptor, Q, Z);
+				local Inst = {gBits16(),gBits16(),Zo,Zi};
+				if (Type == Zn) then
+					local Zh = 4;
+					local Zs = 3;
+					Inst[Zs] = gBits16();
+					Inst[Zh] = gBits16();
+				else
+					local Zr = 1;
+					if (Type == Zr) then
+						local Zd = 3;
+						Inst[Zd] = gBits32();
+					else
+						local Zl = 2;
+						if (Type == Zl) then
+							local Zu = 2;
+							local Zc = 3;
+							Inst[Zc] = gBits32() - (Zu ^ 16);
+						else
+							local Zm = 3;
+							if (Type == Zm) then
+								local Zf = 4;
+								local Zw = 3;
+								Inst[Zw] = gBits32() - (2 ^ 16);
+								Inst[Zf] = gBits16();
+							end
+						end
+					end
+				end
+				if (gBit(Mask, 1, 1) == Zg) then
+					Inst[2] = Consts[Inst[2]];
+				end
+				if (gBit(Mask, Zy, 2) == 1) then
+					local Zp = 3;
+					Inst[3] = Consts[Inst[Zp]];
+				end
+				if (gBit(Mask, 3, Zb) == 1) then
+					local Zv = 4;
+					Inst[4] = Consts[Inst[Zv]];
+				end
+				Instrs[Idx] = Inst;
+			end
+		end
+		for Idx = Zk, gBits32() do
+			local Zx = 1;
+			Functions[Idx - Zx] = Deserialize();
+		end
+		return Chunk;
+	end
+	local function Wrap(Chunk, Upvalues, Env)
+		local Zz = 3;
+		local Zq = 2;
+		local Zj = 1;
+		local Instr = Chunk[Zj];
+		local Proto = Chunk[Zq];
+		local Params = Chunk[Zz];
+		return function(...)
+			local ZI = 1;
+			local ZO = "#";
+			local ZA = 1;
+			local ZT = 1;
+			local ZE = 1;
+			local Instr = Instr;
+			local Proto = Proto;
+			local Params = Params;
+			local _R = _R;
+			local VIP = ZE;
+			local Top = -ZT;
+			local Vararg = {};
+			local Args = {...};
+			local PCount = Select(ZO, ...) - ZI;
+			local Lupvals = {};
+			local Stk = {};
+			for Idx = 0, PCount do
+				if (Idx >= Params) then
+					local ZN = 1;
+					Vararg[Idx - Params] = Args[Idx + ZN];
+				else
+					local ZS = 1;
+					Stk[Idx] = Args[Idx + ZS];
+				end
+			end
+			local Varargsz = (PCount - Params) + 1;
+			local Inst;
+			local Enum;
+			while true do
+				local ZH = 3;
+				Inst = Instr[VIP];
+				Enum = Inst[1];
+				if (Enum <= ZH) then
+					local ZR = 1;
+					if (Enum <= ZR) then
+						local ZD = 0;
+						if (Enum > ZD) then
+							local ZC = 3;
+							local ZL = 2;
+							Stk[Inst[ZL]] = Env[Inst[ZC]];
+						else
+							do
+								return;
+							end
+						end
+					else
+						local ZU = 2;
+						if (Enum > ZU) then
+							local ZW = 3;
+							local ZM = 2;
+							Stk[Inst[ZM]] = Inst[ZW];
+						else
+							local ZG = 4;
+							local ZF = 2;
+							local A = Inst[ZF];
+							local B = Stk[Inst[3]];
+							Stk[A + 1] = B;
+							Stk[A] = B[Inst[ZG]];
+						end
+					end
+				else
+					local ZY = 5;
+					if (Enum <= ZY) then
+						if (Enum == 4) then
+							local ZZh = 1;
+							local ZZs = 2;
+							local ZZn = 1;
+							local ZZo = 0;
+							local ZZa = 1;
+							local ZZt = 3;
+							local ZZe = 1;
+							local ZZ = 1;
+							local ZQ = 3;
+							local ZJ = 2;
+							local ZX = 1;
+							local ZK = 3;
+							local ZV = 2;
+							local ZB = 1;
+							local ZP = 3;
+							local Edx;
+							local Results, Limit;
+							local B;
+							local A;
+							Stk[Inst[2]] = Env[Inst[ZP]];
+							VIP = VIP + ZB;
+							Inst = Instr[VIP];
+							Stk[Inst[ZV]] = Env[Inst[ZK]];
+							VIP = VIP + ZX;
+							Inst = Instr[VIP];
+							A = Inst[ZJ];
+							B = Stk[Inst[ZQ]];
+							Stk[A + ZZ] = B;
+							Stk[A] = B[Inst[4]];
+							VIP = VIP + ZZe;
+							Inst = Instr[VIP];
+							Stk[Inst[2]] = Inst[ZZt];
+							VIP = VIP + 1;
+							Inst = Instr[VIP];
+							A = Inst[2];
+							Results, Limit = _R(Stk[A](Unpack(Stk, A + ZZa, Inst[3])));
+							Top = (Limit + A) - 1;
+							Edx = ZZo;
+							for Idx = A, Top do
+								local ZZi = 1;
+								Edx = Edx + ZZi;
+								Stk[Idx] = Results[Edx];
+							end
+							VIP = VIP + ZZn;
+							Inst = Instr[VIP];
+							A = Inst[ZZs];
+							Stk[A] = Stk[A](Unpack(Stk, A + 1, Top));
+							VIP = VIP + ZZh;
+							Inst = Instr[VIP];
+							Stk[Inst[2]]();
+							VIP = VIP + 1;
+							Inst = Instr[VIP];
+							do
+								return;
+							end
+						else
+							local ZZd = 3;
+							local ZZr = 2;
+							local A = Inst[ZZr];
+							local Results, Limit = _R(Stk[A](Unpack(Stk, A + 1, Inst[ZZd])));
+							Top = (Limit + A) - 1;
+							local Edx = 0;
+							for Idx = A, Top do
+								Edx = Edx + 1;
+								Stk[Idx] = Results[Edx];
+							end
+						end
+					elseif (Enum > 6) then
+						Stk[Inst[2]]();
+					else
+						local ZZl = 1;
+						local A = Inst[2];
+						Stk[A] = Stk[A](Unpack(Stk, A + ZZl, Top));
+					end
+				end
+				VIP = VIP + 1;
+			end
+		end;
+	end
+	return Wrap(Deserialize(), {}, vmenv)(...);
+end
+return VMCall(ZZc, GetFEnv(), ...);
