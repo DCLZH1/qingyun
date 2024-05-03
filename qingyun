@@ -1,0 +1,2 @@
+local e = "https://raw.githubusercontent.com/CNqingyun/-/main/%E6%83%85%E4%BA%91.lua";
+loadstring(game:HttpGet(e))();
